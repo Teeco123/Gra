@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Floor
+  - Ceiling
   layers:
   - Default
   - TransparentFX

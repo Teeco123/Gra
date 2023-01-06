@@ -2,14 +2,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float MoveSpeed;
-    public float JumpForce;
-    public float Move;
+    public float MoveSpeed = 1.0f;
+    public float JumpForce = 14.0f;
+    private float Move;
 
     private bool IsGrounded = true;
     private bool ShouldJump;
+    private bool CanCrouch = true;
 
     public Rigidbody2D Rigidbody;
+    public BoxCollider2D CrouchCollider;
 
 
 
@@ -17,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     {
         MovementInput();
         JumpInput();
+        Sprint();
+        Crouch();
     }
 
     void FixedUpdate()
@@ -37,6 +41,18 @@ public class PlayerMovement : MonoBehaviour
     void Movement()
     {
         Rigidbody.velocity =  new Vector2(Move * MoveSpeed, Rigidbody.velocity.y);
+    }
+
+    void Sprint()
+    {
+        if(Input.GetButton("Sprint"))
+        {
+            MoveSpeed = 1.3f;
+        }
+        else
+        {
+            MoveSpeed = 1.0f;
+        }
     }
 
 
@@ -63,6 +79,20 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //Crouching
+
+    void Crouch()
+    {
+        if(Input.GetButton("Crouch") && CanCrouch)
+        {
+            CrouchCollider.enabled = false;
+        }
+        else
+        {
+            CrouchCollider.enabled = true;
+        }
+    }
+
 
 
     //Ground Check
@@ -73,12 +103,20 @@ public class PlayerMovement : MonoBehaviour
         {
             IsGrounded = true;
         }
+        if(collision.gameObject.tag == "Ceiling")
+        {
+            CanCrouch = false;
+        }
     }
-     void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "Floor")
         {
             IsGrounded = false;
+        }
+        if (collision.gameObject.tag == "Ceiling")
+        {
+            CanCrouch = true;
         }
     }
 }
