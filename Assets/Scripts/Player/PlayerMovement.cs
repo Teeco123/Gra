@@ -6,9 +6,10 @@ public class PlayerMovement : MonoBehaviour
     public float JumpForce = 14.0f;
     private float Move;
 
-    private bool IsGrounded = true;
-    private bool ShouldJump;
-    private bool CanCrouch = true;
+    public bool IsGrounded = true;
+    public bool ShouldJump;
+    public bool CanStand = true;
+    public bool IsSprinting;
 
     public Rigidbody2D Rigidbody;
     public BoxCollider2D CrouchCollider;
@@ -45,13 +46,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Sprint()
     {
-        if(Input.GetButton("Sprint"))
+        if(Input.GetButton("Sprint") && IsGrounded && CanStand)
         {
             MoveSpeed = 1.3f;
+            IsSprinting = true;
         }
-        else
+        else if (Input.GetButtonUp("Sprint") || !IsGrounded)
         {
             MoveSpeed = 1.0f;
+            IsSprinting = false;
         }
     }
 
@@ -61,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
     void JumpInput()
     {
-        if (Input.GetButton("Jump") && IsGrounded)
+        if (Input.GetButton("Jump") && IsGrounded && CanStand)
         {
             ShouldJump = true;
         }
@@ -83,13 +86,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Crouch()
     {
-        if(Input.GetButton("Crouch") && CanCrouch)
+        if(Input.GetButton("Crouch") && !IsSprinting && IsGrounded)
         {
             CrouchCollider.enabled = false;
+            MoveSpeed = 0.7f;
         }
-        else
+        else if(CanStand && !IsSprinting) 
         {
             CrouchCollider.enabled = true;
+            MoveSpeed = 1.0f;
         }
     }
 
@@ -105,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if(collision.gameObject.tag == "Ceiling")
         {
-            CanCrouch = false;
+            CanStand = false;
         }
     }
     void OnTriggerExit2D(Collider2D collision)
@@ -116,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (collision.gameObject.tag == "Ceiling")
         {
-            CanCrouch = true;
+            CanStand = true;
         }
     }
 }
