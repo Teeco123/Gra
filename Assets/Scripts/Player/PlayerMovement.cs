@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(Input.GetButton("Sprint") && IsGrounded && CanStand)
         {
-            MoveSpeed = 1.3f;
+            MoveSpeed = 1.5f;
             IsSprinting = true;
         }
         else if (Input.GetButtonUp("Sprint") || !IsGrounded)
