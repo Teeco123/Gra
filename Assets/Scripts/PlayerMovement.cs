@@ -10,9 +10,11 @@ public class PlayerMovement : MonoBehaviour
     public bool ShouldJump;
     public bool CanStand = true;
     public bool IsSprinting;
+    public bool FacingRight = true;
 
     public Rigidbody2D Rigidbody;
     public BoxCollider2D CrouchCollider;
+    public Animator Animator;
 
 
 
@@ -22,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
         JumpInput();
         Sprint();
         Crouch();
+        FlipInput();
     }
 
     void FixedUpdate()
@@ -37,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     void MovementInput()
     {
         Move = Input.GetAxisRaw("Horizontal");
+
+        Animator.SetFloat("Speed", Mathf.Abs(Move));
     }
 
     void Movement()
@@ -64,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
     void JumpInput()
     {
-        if (Input.GetButton("Jump") && IsGrounded && CanStand)
+        if (Input.GetButtonDown("Jump") && IsGrounded && CanStand)
         {
             ShouldJump = true;
         }
@@ -96,6 +101,33 @@ public class PlayerMovement : MonoBehaviour
             CrouchCollider.enabled = true;
             MoveSpeed = 1.0f;
         }
+    }
+
+
+
+    //Flip
+
+    void FlipInput()
+    {
+        if(Move > 0 && !FacingRight)
+        {
+            Flip();
+        }
+        else if(Move < 0 && FacingRight)
+        {
+            Flip();
+        }
+    }
+
+    void Flip()
+    {
+        // Switch the way the player is labelled as facing.
+        FacingRight = !FacingRight;
+
+        // Multiply the player's x local scale by -1.
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 
 
