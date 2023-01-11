@@ -55,11 +55,13 @@ public class PlayerMovement : MonoBehaviour
         {
             MoveSpeed = 1.5f;
             IsSprinting = true;
+            Animator.SetBool("IsSprinting", true);
         }
         else if (Input.GetButtonUp("Sprint") || !IsGrounded)
         {
             MoveSpeed = 1.0f;
             IsSprinting = false;
+            Animator.SetBool("IsSprinting", false);
         }
     }
 
@@ -95,11 +97,14 @@ public class PlayerMovement : MonoBehaviour
         {
             CrouchCollider.enabled = false;
             MoveSpeed = 0.7f;
+            Animator.SetBool("IsCrouching", true);
+
         }
         else if(CanStand && !IsSprinting) 
         {
             CrouchCollider.enabled = true;
             MoveSpeed = 1.0f;
+            Animator.SetBool("IsCrouching", false);
         }
     }
 
